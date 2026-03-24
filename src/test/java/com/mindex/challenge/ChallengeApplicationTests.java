@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
 
 import static org.junit.Assert.*;
+
+import java.time.LocalDate;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -54,5 +57,41 @@ public class ChallengeApplicationTests {
         assertNotNull(rs);
         assertEquals(2, rs.getNumberOfReports());
     }
+
+	@Test
+	public void testCreateCompensation() {
+    Compensation compensation = new Compensation();
+    compensation.setEmployeeId("16a596ae-edd3-4847-99fe-c4518e82c86f");
+    compensation.setSalary(100000.0);
+    compensation.setEffectiveDate(LocalDate.of(2020, 1, 1));
+
+    Compensation created = employeeService.createCompensation(compensation);
+
+    assertNotNull(created);
+	assertNotNull(created.getId()); // Mongo should generate ID
+    assertEquals(compensation.getEmployeeId(), created.getEmployeeId());
+    assertEquals(compensation.getSalary(), created.getSalary(), 0.0);
+    assertEquals(compensation.getEffectiveDate(), created.getEffectiveDate());
+	}
+
+	public void testReadCompensation() {
+    String employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+
+    // First create it
+    Compensation compensation = new Compensation();
+    compensation.setEmployeeId(employeeId);
+    compensation.setSalary(120000.0);
+    compensation.setEffectiveDate(LocalDate.of(2021, 5, 15));
+
+    employeeService.createCompensation(compensation);
+
+    // Then read it
+    Compensation retrieved = employeeService.getCompensation(employeeId);
+
+    assertNotNull(retrieved);
+    assertEquals(employeeId, retrieved.getEmployeeId());
+    assertEquals(120000.0, retrieved.getSalary(), 0.0);
+    assertEquals(LocalDate.of(2021, 5, 15), retrieved.getEffectiveDate());
+	}
 
 }
