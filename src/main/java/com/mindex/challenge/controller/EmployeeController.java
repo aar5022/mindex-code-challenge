@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.mindex.challenge.data.ReportingStructure;
 
 @RestController
 public class EmployeeController {
@@ -39,5 +40,10 @@ public class EmployeeController {
 
         employee.setEmployeeId(id);
         return employeeService.update(employee);
+    }
+
+    @GetMapping("/reportingStructure/{id}")
+    public ReportingStructure getReportingStructure(@PathVariable String id) {
+        return employeeService.getReportingStructure(id);
     }
 }
