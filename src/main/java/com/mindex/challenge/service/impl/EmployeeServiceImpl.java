@@ -55,6 +55,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    /**
+    * Recursively counts all direct and indirect reports.
+    *
+    * @param employee The current employee node being evaluated
+    * @param visited  Tracks visited employee IDs to avoid duplication
+    *
+    * @return total number of unique reports under this employee
+    */
     private int countReports(Employee employee, Set<String> visited) {
         if (employee.getDirectReports() == null) {return 0;}
 
@@ -62,14 +70,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         for (Employee report : employee.getDirectReports()) {
             if (report != null && !visited.contains(report.getEmployeeId())) {
                 visited.add(report.getEmployeeId());
+                // Fetch full employee object since directReports may only contain IDs
                 Employee fullEmployee = employeeRepository.findByEmployeeId(report.getEmployeeId());
 
+                // Count this report and recursively count their reports
                 count += 1 + countReports(fullEmployee, visited);
             }
         }
         return count;
     }
 
+
+    /**
+    * Retrieves the reporting structure for a given employee.
+    *
+    * Approach:
+    * - Fetch the root employee
+    * - Recursively traverse all direct reports
+    * - Count each unique employee encountered
+    *
+    * A Set is used to prevent:
+    * - Double counting
+    * - Infinite loops in case of cyclic relationships
+    */
     @Override
     public ReportingStructure getReportingStructure(String employeeId) {
         Employee employee = employeeRepository.findByEmployeeId(employeeId);
@@ -79,6 +102,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new ReportingStructure(employee, count);
     }
 
+
+    // Persists a compensation record.
     @Override
     public Compensation createCompensation(Compensation compensation) {
     Compensation existing =
@@ -91,6 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     return compensationRepository.save(compensation);
 }
 
+    // Retrieves the compensation record for an employee.
     @Override
     public Compensation getCompensation(String employeeId) {
         return compensationRepository.findByEmployeeId(employeeId);

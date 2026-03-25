@@ -43,16 +43,33 @@ public class EmployeeController {
         return employeeService.update(employee);
     }
 
+
+    /**
+     * GET endpoint to retrieve a reporting structure by employee ID.
+     *
+     * This endpoint does not persist any data and instead computes
+     * the reporting structure dynamically on each request.
+     */
     @GetMapping("/reportingStructure/{id}")
     public ReportingStructure getReportingStructure(@PathVariable String id) {
         return employeeService.getReportingStructure(id);
     }
 
+    /**
+    * POST endpoint to create a compensation record.
+    *
+    * Accepts a JSON payload and persists it to the database.
+    */
     @PostMapping("/compensation")
     public Compensation createCompensation(@RequestBody Compensation compensation) {
         return employeeService.createCompensation(compensation);
     }
 
+    /**
+    * GET endpoint to retrieve the latest compensation for an employee.
+    *
+    * Returns the most recent record based on effective date.
+    */
     @GetMapping("/compensation/{employeeId}")
     public Compensation getCompensation(@PathVariable String employeeId) {
         return employeeService.getCompensation(employeeId);

@@ -58,6 +58,12 @@ public class ChallengeApplicationTests {
         assertEquals(2, rs.getNumberOfReports());
     }
 
+    /**
+    * Verifies that compensation records are:
+    * - Successfully persisted
+    * - Correctly retrieved
+    * - Returning the most recent entry when multiple exist
+    */
 	@Test
 	public void testCreateCompensation() {
     Compensation compensation = new Compensation();

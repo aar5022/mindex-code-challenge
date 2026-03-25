@@ -4,6 +4,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 
+
+/**
+ * Represents an employee's compensation details.
+ *
+ * Stored in a separate collection to:
+ * - Allow independent scaling
+ * - Support multiple compensation records over time
+ *
+ * employeeId is used as a reference instead of embedding
+ * the full Employee object for better normalization.
+ */
 @Document(collection = "compensation")
 public class Compensation {
     
